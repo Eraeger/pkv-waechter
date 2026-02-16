@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Check, X, Building2, Stethoscope, Euro, Hash, Calendar, FileText } from 'lucide-react';
+import { Check, X, Building2, Stethoscope, Euro, Hash, Calendar, FileText, FileSearch } from 'lucide-react';
 
-export const VerificationForm = ({ data, onConfirm, onCancel, isConfirming }) => {
+export const VerificationForm = ({ data, file, onConfirm, onCancel, isConfirming }) => {
+    const [isSelected, setIsSelected] = useState(true);
     const [formData, setFormData] = useState({
         doctor_name: data.doctor_name || '',
         doctor_type: data.doctor_type || '',
@@ -25,15 +26,59 @@ export const VerificationForm = ({ data, onConfirm, onCancel, isConfirming }) =>
     const inputClasses = "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm";
     const labelClasses = "text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-1 flex items-center gap-2";
 
+    const isPdf = file?.type === 'application/pdf';
+    const previewUrl = file ? URL.createObjectURL(file) : null;
+
     return (
         <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             className="w-full bg-zinc-900/50 backdrop-blur-xl border border-zinc-800 rounded-3xl p-6 shadow-2xl"
         >
-            <h2 className="text-xl font-bold mb-6 text-center bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent">
+            <h2 className="text-xl font-bold mb-4 text-center bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent">
                 Beleg prüfen
             </h2>
+
+            {/* Document Preview */}
+            <div className="mb-6 flex flex-col items-center">
+                <motion.div
+                    onClick={() => setIsSelected(!isSelected)}
+                    animate={isSelected ? {
+                        boxShadow: [
+                            "0 0 0 0px rgba(99, 102, 241, 0)",
+                            "0 0 0 8px rgba(99, 102, 241, 0.4)",
+                            "0 0 0 0px rgba(99, 102, 241, 0)"
+                        ]
+                    } : {}}
+                    transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                    }}
+                    className={`relative w-40 h-52 bg-zinc-800 rounded-xl overflow-hidden border-2 cursor-pointer transition-all duration-300 ${isSelected ? 'border-indigo-500' : 'border-zinc-700 grayscale'}`}
+                >
+                    {isPdf ? (
+                        <div className="w-full h-full flex flex-col items-center justify-center gap-3 p-4">
+                            <FileSearch className="w-12 h-12 text-indigo-400" />
+                            <span className="text-[10px] text-zinc-400 text-center break-all">{file.name}</span>
+                        </div>
+                    ) : (
+                        <img
+                            src={previewUrl}
+                            alt="Preview"
+                            className="w-full h-full object-cover"
+                        />
+                    )}
+                    {isSelected && (
+                        <div className="absolute top-2 right-2 bg-indigo-500 rounded-full p-1 shadow-lg">
+                            <Check className="w-3 h-3 text-white" />
+                        </div>
+                    )}
+                </motion.div>
+                <p className="text-[10px] text-zinc-500 mt-3 uppercase tracking-widest font-bold">
+                    {isSelected ? 'Dokument ausgewählt' : 'Klicken zum Auswählen'}
+                </p>
+            </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>

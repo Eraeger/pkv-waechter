@@ -13,6 +13,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [isConfirming, setIsConfirming] = useState(false);
+  const [currentFile, setCurrentFile] = useState(null);
   const [extractedData, setExtractedData] = useState(null);
   const [feedback, setFeedback] = useState(null); // 'success' | 'duplicate' | 'error'
   const [errorMessage, setErrorMessage] = useState('');
@@ -35,6 +36,7 @@ function App() {
   const handleUpload = async (file) => {
     console.log('Upload started for file:', file.name);
     setIsUploading(true);
+    setCurrentFile(file);
     setFeedback(null);
     setErrorMessage('');
     try {
@@ -67,10 +69,11 @@ function App() {
   const handleConfirm = async (formData) => {
     setIsConfirming(true);
     try {
-      const result = await confirmReceiptData(formData);
+      const result = await confirmReceiptData(formData, currentFile);
       if (result.status === 'stored' || result.success) {
         setFeedback('success');
         setExtractedData(null);
+        setCurrentFile(null);
         fetchData();
       } else {
         throw new Error('Speichern fehlgeschlagen');
@@ -90,6 +93,7 @@ function App() {
 
   const handleCancel = () => {
     setExtractedData(null);
+    setCurrentFile(null);
   };
 
   // Shake animation variants for the whole container if duplicate
@@ -120,6 +124,7 @@ function App() {
         ) : extractedData ? (
           <VerificationForm
             data={extractedData}
+            file={currentFile}
             onConfirm={handleConfirm}
             onCancel={handleCancel}
             isConfirming={isConfirming}

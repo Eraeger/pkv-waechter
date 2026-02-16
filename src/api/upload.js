@@ -13,7 +13,17 @@ export const uploadReceipt = async (file) => {
     }
 };
 
-export const confirmReceiptData = async (data) => {
+export const confirmReceiptData = async (formData, file) => {
+    const data = new FormData();
+    // Append all form fields
+    Object.entries(formData).forEach(([key, value]) => {
+        data.append(key, value);
+    });
+    // Append the original file
+    if (file) {
+        data.append('file', file);
+    }
+
     try {
         const response = await client.post('/confirm', data);
         return response.data;
