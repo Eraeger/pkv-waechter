@@ -5,11 +5,7 @@ export const uploadReceipt = async (file) => {
     formData.append('file', file);
 
     try {
-        const response = await client.post('/upload', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
+        const response = await client.post('/upload', formData);
         return response.data;
     } catch (error) {
         console.error('Error uploading receipt:', error);

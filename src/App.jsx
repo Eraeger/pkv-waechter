@@ -12,6 +12,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [feedback, setFeedback] = useState(null); // 'success' | 'duplicate' | 'error'
+  const [errorMessage, setErrorMessage] = useState('');
 
   const fetchData = async () => {
     try {
@@ -47,10 +48,14 @@ function App() {
     } catch (err) {
       console.error(err);
       setFeedback('error');
+      setErrorMessage(err.message || 'Netzwerkfehler oder Webhook nicht erreichbar.');
     } finally {
       setIsUploading(false);
-      // Clear feedback after 3s
-      setTimeout(() => setFeedback(null), 3000);
+      // Clear feedback after 5s if it's an error to give user time to read
+      setTimeout(() => {
+        setFeedback(null);
+        setErrorMessage('');
+      }, feedback === 'error' ? 5000 : 3000);
     }
   };
 
@@ -143,7 +148,7 @@ function App() {
             </div>
             <div>
               <p className="font-bold text-lg">Fehler</p>
-              <p className="text-xs text-red-100">Upload fehlgeschlagen. Bitte erneut versuchen.</p>
+              <p className="text-xs text-red-100">{errorMessage || 'Upload fehlgeschlagen. Bitte erneut versuchen.'}</p>
             </div>
           </motion.div>
         )}
