@@ -12,3 +12,13 @@ export const uploadReceipt = async (file) => {
         throw error;
     }
 };
+
+export const confirmReceiptData = async (data) => {
+    try {
+        const response = await client.post('/confirm', data);
+        return response.data;
+    } catch (error) {
+        console.error('Error confirming data:', error);
+        throw error;
+    }
+};
