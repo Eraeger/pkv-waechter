@@ -30,6 +30,7 @@ function App() {
   }, []);
 
   const handleUpload = async (file) => {
+    console.log('Upload started for file:', file.name);
     setIsUploading(true);
     setFeedback(null);
     try {
@@ -86,7 +87,7 @@ function App() {
           </div>
         ) : (
           <>
-            {status && <StatusCard status={data?.status || 'WARTEN'} />}
+            <StatusCard status={data?.status || 'WARTEN'} />
 
             {data && (
               <ProgressRing

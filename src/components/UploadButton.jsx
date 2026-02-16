@@ -7,6 +7,7 @@ export const UploadButton = ({ onUpload, isUploading }) => {
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
+        console.log('File selected:', file ? file.name : 'none');
         if (file) {
             onUpload(file);
         }
