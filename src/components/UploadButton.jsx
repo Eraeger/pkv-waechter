@@ -20,7 +20,7 @@ export const UploadButton = ({ onUpload, isUploading }) => {
         <div className="w-full max-w-sm mt-8">
             <input
                 type="file"
-                accept="image/*"
+                accept="image/*,.pdf"
                 capture="environment"
                 className="hidden"
                 ref={fileInputRef}
