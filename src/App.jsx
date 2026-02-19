@@ -43,9 +43,11 @@ function App() {
       const result = await uploadReceipt(file);
       console.log('Extraction result:', result);
 
-      if (result.doctor_name || result.invoice_amount) {
-        // We got data back from Gemini!
-        setExtractedData(result);
+      const invoiceData = result.extracted_invoice_data || result;
+
+      if (invoiceData.doctor_name || invoiceData.invoice_amount) {
+        // We got data back from Gemini (nested or flat)
+        setExtractedData(invoiceData);
       } else if (result.status === 'duplicate_file') {
         setFeedback('duplicate');
         setTimeout(() => setFeedback(null), 3000);
@@ -131,7 +133,7 @@ function App() {
           />
         ) : (
           <>
-            <StatusCard status={data?.status || 'WARTEN'} />
+            {data?.status && data.status !== 'WARTEN' && <StatusCard status={data.status} />}
 
             {data && (
               <ProgressRing
